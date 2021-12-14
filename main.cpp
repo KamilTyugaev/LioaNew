@@ -4,26 +4,30 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <iostream>
+#include <queue>
+using namespace std;
 
 
-int NUM[6] = { 0,0,0,0,0,0 };
+int NUM[] = {};
 
 
-
-void DFS(int v, int **matrix,int size) {
-
+void BFS(int v, int **matrix,int size){
+//    int s;
+    queue<int> q;
     NUM[v] = 1;
-    printf("%d", v);
-    
-    for (int i = 0; i < size; i++) {
-        
-            if (matrix [v][i] == 1 && NUM[i] == 0)
-            {
-                DFS(i, matrix,size);
+    q.push(v);
+    while (!q.empty()) {
+        v = q.front();
+        q.pop();
+        printf("%4i", v);
+        for (int i = 0; i < size; i++) {
+            if (matrix[v][i] == 1 && NUM[i] == 0) {
+                q.push(i);
+                NUM[i] = 1;
             }
+        }
     }
 }
-
 
 
 int main()
@@ -42,9 +46,7 @@ int main()
     {
         M[i] = (int*)malloc(n * sizeof(int));
     }
-
-    //int M[6][6];
-    
+    //сгенерирование матрицы
     printf("Сгенерированные матрицы:");
     printf("\n");
     for (int i = 0; i < n; i++) {
@@ -54,17 +56,18 @@ int main()
         }
         printf("\n");
     }
-
-    printf("\n\n");
+    printf("\n");
 
     printf("Введите вершину, с которой будет начинаться обход:  ");
     scanf("%d", &v);
 
     printf("\n");
-    printf("Результат:  ");
+    printf("\n""Результат:  ");
+
     while (NUM[v] != 1)
     {
-        DFS(v,M,n);
+        BFS(v,M,n);
     }
+    printf("\n");
 
 }
