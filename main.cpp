@@ -12,7 +12,6 @@ int NUM[] = {};
 
 
 void BFS(int v, int **matrix,int size){
-//    int s;
     queue<int> q;
     NUM[v] = 1;
     q.push(v);
