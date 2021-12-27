@@ -1,70 +1,83 @@
+
 #define _CRT_SECURE_NO_WARNINGS
-#include "locale"
-#include "stdio.h"
-#include <locale.h>
-#include <stdlib.h>
 #include <iostream>
+#include <locale.h>
+#include <queue>
+using namespace std;
 
+int* NUM;
+int num;
+int** matrix;
+void BFSD(int num);
 
-int NUM[6] = { 0,0,0,0,0,0 };
-
-
-
-void DFS(int v, int **matrix,int size) {
-
-    NUM[v] = 1;
-    printf("%d", v);
-    
-    for (int i = 0; i < size; i++) {
-        
-            if (matrix [v][i] == 1 && NUM[i] == 0)
-            {
-                DFS(i, matrix,size);
+void BFSD(int v) {
+//    int s;
+    queue<int> q;
+    NUM[v] = 0;
+    q.push(v);
+    while (!q.empty()) {
+        v = q.front();
+        q.pop();
+        printf("%4i", v);
+        for (int i = 0; i < num; i++) {
+            if (matrix[v][i] > 0 && NUM[i] > (matrix[v][i] + NUM[v])) {
+                q.push(i);
+                NUM[i] = matrix[v][i] + NUM[v];
             }
+        }
     }
+    printf("\nРасстояние до вершин: ");
+    for (int i = 0; i < num; i++) {
+        printf("%4i", NUM[i]);
+    }
+
 }
-
-
 
 int main()
 {
+    setlocale(LC_ALL, "Rus");
+    int generate;
+    int c;
+    printf("Введите размер массива: ");
+    scanf("%i", &num);
+    matrix = new int* [num];
+    for (int i = 0; i < num; i++) {
+        matrix[i] = new int[num];
+    }
     srand(time(NULL));
-    setlocale(LC_ALL, "RUS");
-    int v,n;
-    printf("Введите размерность матрицы:  ");
-    scanf("%d", &n);
-    
-    
-    int** M;
-    M = (int**)malloc(n * sizeof(int*));
-
-    for (int i = 0; i < n; i++)  // цикл по строкам
-    {
-        M[i] = (int*)malloc(n * sizeof(int));
-    }
-
-    //int M[6][6];
-    
-    printf("Сгенерированные матрицы:");
-    printf("\n");
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            M[i][j] = rand() % 2;
-            printf("%3d,", M[i][j]);
+    for (int i = 0; i < num; i++) {
+        for (int j = 0; j < num; j++) {
+            if (j == i) {
+                matrix[i][j] = 0;
+            }
+            else if (j > i) {
+                generate = rand() % 110;
+                if (generate >= 50) {
+                    matrix[i][j] = rand() % 10;
+                }
+                else {
+                    matrix[i][j] = 0;
+                }
+            }
+            else {
+                matrix[i][j] = matrix[j][i];
+            }
         }
+    }
+    //вывод массива
+    printf("Массив:");
+    for (int i = 0; i < num; i++) {
         printf("\n");
+        for (int j = 0; j < num; j++) {
+            printf("%4i", matrix[i][j]);
+        }
     }
-
-    printf("\n\n");
-
-    printf("Введите вершину, с которой будет начинаться обход:  ");
-    scanf("%d", &v);
-
+    NUM = new int[num];
+    for (int i = 0; i < num; i++) {
+        NUM[i] = 10000;
+    }
+    printf("\nВведите вершину начала обхода: ");
+    scanf("%i", &c);
     printf("\n");
-    printf("Результат:  ");
-    while (NUM[v] != 1)
-    {
-        DFS(v,M,n);
-    }
-
+    BFSD(c);
 }
